@@ -1,0 +1,16 @@
+{
+  "name": "Introducao Alimentar",
+  "short_name": "IA Alimentar",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#E6E6FA",
+  "theme_color": "#FFB6C1",
+  "description": "MVP de PWA para consulta rapida de introducao alimentar.",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
