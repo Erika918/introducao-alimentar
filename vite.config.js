@@ -1,7 +1,8 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
+// https://vitejs.dev
 export default defineConfig({
-  base: "/introducao-alimentar/",
-  plugins: [react()]
-});
+  plugins: [react()],
+  base: './', // MUDE PARA './' (com um ponto antes da barra)
+})
