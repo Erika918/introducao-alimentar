@@ -97,6 +97,15 @@ const foods = [
     imageUrl:
       "https://images.unsplash.com/photo-1685504445355-0e7bdf90d415?auto=format&fit=crop&w=1200&q=80",
     description: "Excelente fonte de ferro e fibras. Ofereca os floretes bem cozidos."
+  },
+  {
+    id: 8,
+    name: "Mamao",
+    canOffer: true,
+    superHealthy: true,
+    imageUrl:
+      "https://images.unsplash.com/photo-1517282009859-f000ec3b26fe?auto=format&fit=crop&w=1200&q=80",
+    description: "Rico em fibras e facil de amassar, ajudando no intestino do bebe."
   }
 ];
 
@@ -112,39 +121,61 @@ const initialWeeklyDiary = [
   {
     id: 1,
     day: "Segunda",
+    breakfastTime: "08:00",
     breakfast: "Banana amassada + agua",
+    lunchTime: "12:00",
     lunch: "Batata-doce cozida + frango desfiado",
+    dinnerTime: "18:30",
+    dailyNotes: "",
     dinner: "Legumes cozidos em tiras + arroz"
   },
   {
     id: 2,
     day: "Terca",
+    breakfastTime: "08:00",
     breakfast: "Mingau sem acucar + fruta macia",
+    lunchTime: "12:00",
     lunch: "Arroz, feijao e legumes bem cozidos",
+    dinnerTime: "18:30",
+    dailyNotes: "",
     dinner: "Pure de abobora com frango desfiado"
   },
   {
     id: 3,
     day: "Quarta",
+    breakfastTime: "08:00",
     breakfast: "Abacate amassado com pouca agua",
+    lunchTime: "12:00",
     lunch: "Abobrinha cozida + carne moida",
+    dinnerTime: "18:30",
+    dailyNotes: "",
     dinner: "Brocolis cozido + arroz"
   },
   {
     id: 4,
     day: "Quinta",
+    breakfastTime: "08:00",
     breakfast: "Pera cozida amassada",
+    lunchTime: "12:00",
     lunch: "Moranga cozida + frango desfiado",
+    dinnerTime: "18:30",
+    dailyNotes: "",
     dinner: "Sopa de legumes amassados"
   },
   {
     id: 5,
     day: "Sexta",
+    breakfastTime: "08:00",
     breakfast: "Iogurte natural sem acucar + fruta",
+    lunchTime: "12:00",
     lunch: "Arroz + feijao + cenoura cozida",
+    dinnerTime: "18:30",
+    dailyNotes: "",
     dinner: "Pure de batata com legumes"
   }
 ];
+
+const WEEKLY_DIARY_STORAGE_KEY = "introducao-alimentar-weekly-diary";
 
 function FoodCard({ food, isDarkMode }) {
   return (
@@ -195,7 +226,38 @@ function FoodCard({ food, isDarkMode }) {
 function App() {
   const [query, setQuery] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [weeklyDiary, setWeeklyDiary] = useState(initialWeeklyDiary);
+  const [weeklyDiary, setWeeklyDiary] = useState(() => {
+    const savedDiary = localStorage.getItem(WEEKLY_DIARY_STORAGE_KEY);
+    if (!savedDiary) {
+      return initialWeeklyDiary;
+    }
+
+    try {
+      const parsedDiary = JSON.parse(savedDiary);
+      if (!Array.isArray(parsedDiary)) {
+        return initialWeeklyDiary;
+      }
+
+      return initialWeeklyDiary.map((defaultDay) => {
+        const savedDay = parsedDiary.find((day) => day.id === defaultDay.id);
+        if (!savedDay) {
+          return defaultDay;
+        }
+
+        return {
+          ...defaultDay,
+          ...savedDay,
+          breakfastTime: savedDay.breakfastTime ?? defaultDay.breakfastTime,
+          lunchTime: savedDay.lunchTime ?? defaultDay.lunchTime,
+          dinnerTime: savedDay.dinnerTime ?? defaultDay.dinnerTime,
+          dailyNotes: savedDay.dailyNotes ?? defaultDay.dailyNotes
+        };
+      });
+    } catch {
+      return initialWeeklyDiary;
+    }
+  });
+  const [savedDayId, setSavedDayId] = useState(null);
   const [externalResult, setExternalResult] = useState(null);
   const [isSearchingExternal, setIsSearchingExternal] = useState(false);
   const [externalSearchError, setExternalSearchError] = useState("");
@@ -294,6 +356,11 @@ function App() {
     setWeeklyDiary((currentDays) =>
       currentDays.map((day) => (day.id === dayId ? { ...day, [mealPeriod]: value } : day))
     );
+  };
+
+  const handleSaveDay = (dayId) => {
+    localStorage.setItem(WEEKLY_DIARY_STORAGE_KEY, JSON.stringify(weeklyDiary));
+    setSavedDayId(dayId);
   };
 
   return (
@@ -449,10 +516,18 @@ function App() {
 
                 <div className="space-y-3">
                   <div className="rounded-xl bg-[#F5F3FF] p-3">
-                    <label className="mb-2 inline-flex items-center gap-2 text-xs font-semibold text-[#7C3AED]">
-                      <Sun size={14} />
-                      Cafe da manha
-                    </label>
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      <label className="inline-flex items-center gap-2 text-xs font-semibold text-[#7C3AED]">
+                        <Sun size={14} />
+                        Cafe da manha
+                      </label>
+                      <input
+                        type="time"
+                        value={day.breakfastTime}
+                        onChange={(event) => handleMealChange(day.id, "breakfastTime", event.target.value)}
+                        className="rounded-md border border-[#DDD6FE] bg-white px-2 py-1 text-xs text-[#5B21B6] outline-none focus:border-[#A78BFA]"
+                      />
+                    </div>
                     <input
                       type="text"
                       value={day.breakfast}
@@ -462,10 +537,18 @@ function App() {
                   </div>
 
                   <div className="rounded-xl bg-[#FDF2F8] p-3">
-                    <label className="mb-2 inline-flex items-center gap-2 text-xs font-semibold text-[#BE185D]">
-                      <Utensils size={14} />
-                      Almoco
-                    </label>
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      <label className="inline-flex items-center gap-2 text-xs font-semibold text-[#BE185D]">
+                        <Utensils size={14} />
+                        Almoco
+                      </label>
+                      <input
+                        type="time"
+                        value={day.lunchTime}
+                        onChange={(event) => handleMealChange(day.id, "lunchTime", event.target.value)}
+                        className="rounded-md border border-[#FBCFE8] bg-white px-2 py-1 text-xs text-[#BE185D] outline-none focus:border-[#F472B6]"
+                      />
+                    </div>
                     <input
                       type="text"
                       value={day.lunch}
@@ -475,16 +558,49 @@ function App() {
                   </div>
 
                   <div className="rounded-xl bg-[#EEF2FF] p-3">
-                    <label className="mb-2 inline-flex items-center gap-2 text-xs font-semibold text-[#4338CA]">
-                      <Moon size={14} />
-                      Janta
-                    </label>
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      <label className="inline-flex items-center gap-2 text-xs font-semibold text-[#4338CA]">
+                        <Moon size={14} />
+                        Janta
+                      </label>
+                      <input
+                        type="time"
+                        value={day.dinnerTime}
+                        onChange={(event) => handleMealChange(day.id, "dinnerTime", event.target.value)}
+                        className="rounded-md border border-[#C7D2FE] bg-white px-2 py-1 text-xs text-[#3730A3] outline-none focus:border-[#818CF8]"
+                      />
+                    </div>
                     <input
                       type="text"
                       value={day.dinner}
                       onChange={(event) => handleMealChange(day.id, "dinner", event.target.value)}
                       className="w-full rounded-lg border border-[#C7D2FE] bg-white px-3 py-2 text-sm outline-none focus:border-[#818CF8]"
                     />
+                  </div>
+
+                  <div className="rounded-xl bg-[#F3E8FF] p-3">
+                    <label className="mb-2 block text-xs font-semibold text-[#7E22CE]">
+                      Registro do dia (refeicoes realizadas)
+                    </label>
+                    <textarea
+                      value={day.dailyNotes}
+                      onChange={(event) => handleMealChange(day.id, "dailyNotes", event.target.value)}
+                      placeholder="Ex.: 08:00 banana amassada, 12:15 arroz e legumes..."
+                      rows={3}
+                      className="w-full resize-none rounded-lg border border-[#E9D5FF] bg-white px-3 py-2 text-sm outline-none focus:border-[#C084FC]"
+                    />
+                    <div className="mt-2 flex items-center justify-between gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleSaveDay(day.id)}
+                        className="rounded-full bg-[#A78BFA] px-3 py-1 text-xs font-semibold text-white transition hover:bg-[#8B5CF6]"
+                      >
+                        Salvar refeicoes do dia
+                      </button>
+                      {savedDayId === day.id ? (
+                        <span className="text-xs font-semibold text-[#6D28D9]">Salvo no dispositivo</span>
+                      ) : null}
+                    </div>
                   </div>
                 </div>
               </article>
