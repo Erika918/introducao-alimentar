@@ -122,34 +122,34 @@ const initialWeeklyDiary = [
     id: 1,
     day: "Segunda",
     breakfastTime: "08:00",
-    breakfast: "Banana amassada + agua",
+    breakfast: "Mamão amassado + água",
     lunchTime: "12:00",
     lunch: "Batata-doce cozida + frango desfiado",
     dinnerTime: "18:30",
-    dailyNotes: "",
-    dinner: "Legumes cozidos em tiras + arroz"
+    dinner: "Legumes cozidos em tiras + arroz",
+    dailyNotes: ""
   },
   {
     id: 2,
-    day: "Terca",
+    day: "Terça",
     breakfastTime: "08:00",
-    breakfast: "Mingau sem acucar + fruta macia",
+    breakfast: "Mingau sem açúcar + fruta macia",
     lunchTime: "12:00",
-    lunch: "Arroz, feijao e legumes bem cozidos",
+    lunch: "Arroz, feijão e legumes bem cozidos",
     dinnerTime: "18:30",
-    dailyNotes: "",
-    dinner: "Pure de abobora com frango desfiado"
+    dinner: "Purê de abóbora com frango desfiado",
+    dailyNotes: ""
   },
   {
     id: 3,
     day: "Quarta",
     breakfastTime: "08:00",
-    breakfast: "Abacate amassado com pouca agua",
+    breakfast: "Abacate amassado com pouca água",
     lunchTime: "12:00",
-    lunch: "Abobrinha cozida + carne moida",
+    lunch: "Abobrinha cozida + carne moída",
     dinnerTime: "18:30",
-    dailyNotes: "",
-    dinner: "Brocolis cozido + arroz"
+    dinner: "Brócolis cozido + arroz",
+    dailyNotes: ""
   },
   {
     id: 4,
@@ -159,23 +159,24 @@ const initialWeeklyDiary = [
     lunchTime: "12:00",
     lunch: "Moranga cozida + frango desfiado",
     dinnerTime: "18:30",
-    dailyNotes: "",
-    dinner: "Sopa de legumes amassados"
+    dinner: "Sopa de legumes amassados",
+    dailyNotes: ""
   },
   {
     id: 5,
     day: "Sexta",
     breakfastTime: "08:00",
-    breakfast: "Iogurte natural sem acucar + fruta",
+    breakfast: "Iogurte natural sem açúcar + fruta",
     lunchTime: "12:00",
-    lunch: "Arroz + feijao + cenoura cozida",
+    lunch: "Arroz + feijão + cenoura cozida",
     dinnerTime: "18:30",
-    dailyNotes: "",
-    dinner: "Pure de batata com legumes"
+    dinner: "Purê de batata com legumes",
+    dailyNotes: ""
   }
 ];
 
-const WEEKLY_DIARY_STORAGE_KEY = "introducao-alimentar-weekly-diary";
+
+const WEEKLY_DIARY_STORAGE_KEY = "introducao-alimentar-weekly-diary-v2";
 
 function FoodCard({ food, isDarkMode }) {
   return (
